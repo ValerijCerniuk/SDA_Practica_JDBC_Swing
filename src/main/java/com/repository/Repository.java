@@ -110,4 +110,28 @@ public class Repository {
             e.printStackTrace();
         }
     }
+
+    public void deleteRowInTableByRowId(String tableName, int rowId) {
+        String sql = "DELETE FROM " + tableName +
+                " WHERE " + tableName.concat("Id") + " = " + rowId;
+         try {
+            Statement statement = DatabaseUtil.connectionToDatabase().createStatement();
+            statement.executeUpdate(sql);
+            DatabaseUtil.connectionToDatabase().close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addNewRowToTable(String sql) {
+        System.out.println("Add row to table sql is: ");
+        System.out.println(sql);
+        try {
+            Statement statement = DatabaseUtil.connectionToDatabase().createStatement();
+            statement.executeUpdate(sql);
+            DatabaseUtil.connectionToDatabase().close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

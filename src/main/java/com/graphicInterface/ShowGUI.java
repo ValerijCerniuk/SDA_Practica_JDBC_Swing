@@ -148,15 +148,27 @@ public class ShowGUI extends JFrame
     private void addRowToTable() {
         DefaultTableModel table = (DefaultTableModel) activeTable.get().getModel();
         table.addRow(new Vector<>());
+        String sql = "INSERT INTO " + selectedTable + " values ( null ";
+        for( int i = 0 ; i < columnCountInActiveTable() - 1; ++i){
+            sql = sql.concat(", null");
+        }
+        sql = sql.concat(" )");
+        repository.addNewRowToTable(sql);
         refreshActiveTable();
     }
+
+private int columnCountInActiveTable(){
+        return activeTable.get().getColumnCount();
+
+}
 
     private void removeRowFromTable() {
         DefaultTableModel table = (DefaultTableModel) activeTable.get().getModel();
         String result = JOptionPane.showInputDialog(frame, "Enter row ID to delete:");
         int rowId = Integer.parseInt(result);
         if (rowId < table.getRowCount()){
-        table.removeRow(rowId + 1);
+        table.removeRow(rowId - 1);
+        repository.deleteRowInTableByRowId(selectedTable, rowId );
         refreshActiveTable();
         }else {
             JOptionPane.showMessageDialog(frame, "out of bound");
