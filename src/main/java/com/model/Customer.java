@@ -15,7 +15,7 @@ import java.util.List;
 public class Customer {
 
 
-    private Integer customerId;
+    private Integer id;
     private String fullName;
     private String email;
     private String phoneNumber;

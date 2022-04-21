@@ -5,8 +5,31 @@ import com.repository.Repository;
 import javax.swing.*;
 
 
-public class DataEntryForm {
+public class AddRowWindow {
     Repository repository = new Repository();
+    private JFrame dataEntryFrame = new JFrame();
+
+ public void createWindows(String selectedTable){
+     dataEntryFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+     switch (selectedTable) {
+         case "Flower":
+             dataEntryFrame.add(flowerDataForm());
+             break;
+         case "Customer":
+             dataEntryFrame.add(customerDataForm());
+             break;
+         case "FlowersOrder":
+             dataEntryFrame.add(flowersOrderDataForm());
+             break;
+     }
+
+
+     dataEntryFrame.pack();
+     dataEntryFrame.setSize(450, 250);
+     dataEntryFrame.setLocationRelativeTo(null);
+     dataEntryFrame.setVisible(true);
+ }
 
 
     protected JPanel customerDataForm() {
@@ -58,6 +81,7 @@ public class DataEntryForm {
                             addressFieldText + "\" );";
 
                     repository.updateTable(sql);
+                    dataEntryFrame.dispose();
                 }
         );
 
@@ -96,14 +120,15 @@ public class DataEntryForm {
 
         jButton.addActionListener(actionEvent -> {
                     String nameFieldText = nameField.getText();
-                    String flowerPriceFieldText = flowerPriceField.getText();
+                    Integer flowerPriceFieldText = Integer.parseInt(flowerPriceField.getText());
                     String colorFieldText = colorField.getText();
 
                     String sql = "INSERT INTO Flower ( name, flowerPrice, color) " +
                             "VALUES (\"" + nameFieldText + "\", \"" +
                             flowerPriceFieldText + "\", \"" +
                             colorFieldText + "\" );";
-
+            repository.updateTable(sql);
+            dataEntryFrame.dispose();
                 }
         );
 
@@ -139,7 +164,8 @@ public class DataEntryForm {
                     String sql = "INSERT INTO FlowersOrder ( orderDate, deliveryDay) " +
                             "VALUES (\"" + orderDateFieldText + "\", \"" +
                             deliveryDateFieldText + "\" );";
-
+            repository.updateTable(sql);
+            dataEntryFrame.dispose();
                 }
         );
 

@@ -9,7 +9,7 @@ import lombok.*;
 @Builder
 public class Flower {
 
-    private Integer flowerId;
+    private Integer id;
     private String name;
     private Integer flowerPrice;
     private String color;
@@ -21,7 +21,7 @@ public class Flower {
 
     @Override
     public String toString() {
-        return  "flowerId=" + flowerId +
+        return  "flowerId=" + id +
                 ", name='" + name + '\'' +
                 ", flowerPrice=" + flowerPrice +
                 ", color='" + color + '\'' +

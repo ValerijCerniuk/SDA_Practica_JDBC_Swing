@@ -12,7 +12,7 @@ import java.util.List;
 
 public class FlowersOrder {
 
-    private Integer flowersOrderId;
+    private Integer id;
 
     // private boolean status;
     private String orderDate;

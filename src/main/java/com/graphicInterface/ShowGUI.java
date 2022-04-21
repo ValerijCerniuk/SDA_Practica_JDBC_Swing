@@ -28,9 +28,9 @@ public class ShowGUI extends JFrame
     private Container contentPane = frame.getContentPane();
     private JToolBar toolbar = new JToolBar();
     private AtomicReference<JTable> activeTable = new AtomicReference<>(new JTable());
-    private String selectedTable = null;
-    private DataEntryForm dataEntryForm = new DataEntryForm();
-    private AtomicReference<JPanel> activeDataForm = new AtomicReference<>();
+    AtomicReference<JComboBox<String>> jComboBox =
+            new AtomicReference<>(new JComboBox<>());
+    private String selectedTable;
 
     public void createFrame() {
         //  JFrame frame = new JFrame("Database Manager");
@@ -48,7 +48,7 @@ public class ShowGUI extends JFrame
 
 
     protected JToolBar addButtons(JToolBar toolBar) {
-        JButton button = null;
+        JButton button ;
 
         button = makeActionButton(ADD,
                 "ADD");
@@ -86,42 +86,23 @@ public class ShowGUI extends JFrame
         String cmd = e.getActionCommand();
 
         if (ADD.equals(cmd)) {
-            clearTableOrForm();
-            callDataEntryForm();
-            contentPane.add(activeDataForm.get());
-            contentPane.repaint();
-            contentPane.validate();
+            new AddRowWindow().createWindows(selectedTable);
+
         } else if (REMOVE.equals(cmd)) {
             removeRowFromTable();
+            drawTableByComboBoxSelection();
+
         } else if (ALTER.equals(cmd)) {
             addRowToTable();
+            drawTableByComboBoxSelection();
+
         } else if (UPDATE.equals(cmd)) {
             updateDataFromTable();
+            drawTableByComboBoxSelection();
+
         }
     }
 
-    private void callDataEntryForm() {
-        switch (selectedTable) {
-            case "Flower":
-                activeDataForm.set(dataEntryForm.flowerDataForm());
-                break;
-            case "Customer":
-                activeDataForm.set(dataEntryForm.customerDataForm());
-                break;
-            case "FlowersOrder":
-                activeDataForm.set(dataEntryForm.flowersOrderDataForm());
-                break;
-        }
-    }
-
-    private void clearTableOrForm() {
-        if (activeDataForm.get() != null) {
-            contentPane.remove(activeDataForm.get());
-        }
-        if (activeTable.get() != null) {
-            contentPane.remove(activeTable.get());
-        }
-    }
 
     public DefaultTableModel buildTableModel(ResultSet rs) {
 
@@ -150,17 +131,18 @@ public class ShowGUI extends JFrame
     }
 
     private JComboBox<String> createJComboBox() {
-
         String[] comboBoxChooses = {"Flower", "Customer", "FlowersOrder"};
-        JComboBox<String> jComboBox = new JComboBox<>(comboBoxChooses);
-        selectedTable = (String) jComboBox.getSelectedItem();
-        jComboBox.addItemListener(e -> drawChosenTable());
+        jComboBox = new AtomicReference<>(
+                new JComboBox<>(comboBoxChooses));
 
-        return jComboBox;
+        jComboBox.get().addItemListener(e ->
+            drawTableByComboBoxSelection());
+        return jComboBox.get();
     }
 
-    protected void drawChosenTable() {
-        clearTableOrForm();
+    private void drawTableByComboBoxSelection() {
+        selectedTable = (String) jComboBox.get().getSelectedItem();
+        contentPane.remove(activeTable.get());
         activeTable.set(new JTable(buildTableModel(repository.findAllInTable(selectedTable))));
         contentPane.add(activeTable.get());
         contentPane.repaint();
@@ -170,6 +152,8 @@ public class ShowGUI extends JFrame
     private void refreshActiveTable() {
         contentPane.remove(activeTable.get());
         contentPane.add(activeTable.get());
+        contentPane.repaint();
+        contentPane.validate();
     }
 
     private void addRowToTable() {
@@ -181,28 +165,23 @@ public class ShowGUI extends JFrame
         }
         sql = sql.concat(" )");
         repository.addNewRowToTable(sql);
-        refreshActiveTable();
+        drawTableByComboBoxSelection();
     }
 
     private int columnCountInActiveTable() {
         return activeTable.get().getColumnCount();
-
     }
 
     private void removeRowFromTable() {
         DefaultTableModel table = (DefaultTableModel) activeTable.get().getModel();
         String result = JOptionPane.showInputDialog(frame, "Enter row ID to delete:");
         int rowId = Integer.parseInt(result);
-        if (rowId < table.getRowCount()) {
-            table.removeRow(rowId - 1);
-            repository.deleteRowInTableByRowId(selectedTable, rowId);
-            refreshActiveTable();
-        } else {
-            JOptionPane.showMessageDialog(frame, "out of bound");
-        }
+
+        repository.deleteRowInTableByRowId(selectedTable, rowId);
+
     }
 
-    public void updateDataFromTable() {
+    protected void updateDataFromTable() {
         DefaultTableModel table = (DefaultTableModel) activeTable.get().getModel();
         Vector<Vector> dataVector = table.getDataVector();
         String sql;
