@@ -3,9 +3,15 @@ package com.graphicInterface;
 import com.repository.Repository;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+
+import static java.awt.Component.RIGHT_ALIGNMENT;
 
 
-public class AddRowWindow {
+public class AddRowWithDataWindow {
     Repository repository = new Repository();
     private JFrame dataEntryFrame = new JFrame();
 
@@ -24,7 +30,6 @@ public class AddRowWindow {
              break;
      }
 
-
      dataEntryFrame.pack();
      dataEntryFrame.setSize(450, 250);
      dataEntryFrame.setLocationRelativeTo(null);
@@ -35,7 +40,8 @@ public class AddRowWindow {
     protected JPanel customerDataForm() {
         JPanel customerLog = new JPanel();
         customerLog.setLayout(null);
-
+customerLog.setAutoscrolls(true);
+dataEntryFrame.setTitle("Enter Customer Data");
 
         JLabel name = new JLabel("Full Name");
         JTextField nameField = new JTextField(20);
@@ -92,6 +98,8 @@ public class AddRowWindow {
     protected JPanel flowerDataForm() {
         JPanel customerLog = new JPanel();
         customerLog.setLayout(null);
+        customerLog.setAutoscrolls(true);
+        dataEntryFrame.setTitle("Enter Flower Data");
 
         JLabel name = new JLabel("Name");
         JTextField nameField = new JTextField(20);
@@ -138,6 +146,8 @@ public class AddRowWindow {
     protected JPanel flowersOrderDataForm() {
         JPanel customerLog = new JPanel();
         customerLog.setLayout(null);
+        customerLog.setAutoscrolls(true);
+        dataEntryFrame.setTitle("Enter Flower Order Data");
 
         JLabel orderDate = new JLabel("Order Date");
         JTextField orderDateField = new JTextField(20);

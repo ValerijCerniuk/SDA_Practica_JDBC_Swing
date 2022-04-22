@@ -7,8 +7,7 @@ import javax.swing.table.DefaultTableModel;
 
 import java.awt.*;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -18,19 +17,19 @@ import java.util.concurrent.atomic.AtomicReference;
 public class ShowGUI extends JFrame
         implements ActionListener {
 
-    final private String ADD = "ADD";
+    final private String ADD = "Add";
     final private String REMOVE = "remove";
     final private String ALTER = "alter";
     final private String UPDATE = "update";
-    final String IMAGE_PATH = "src/image/";
-    private Repository repository = new Repository();
-    private JFrame frame = new JFrame("Database Manager");
-    private Container contentPane = frame.getContentPane();
+    final private String IMAGE_PATH = "src/image/";
+    private  Repository repository = new Repository();
+    private  JFrame frame = new JFrame("Database Manager");
+    private  Container contentPane = frame.getContentPane();
     private JToolBar toolbar = new JToolBar();
-    private AtomicReference<JTable> activeTable = new AtomicReference<>(new JTable());
-    AtomicReference<JComboBox<String>> jComboBox =
+    private  AtomicReference<JTable> activeTable = new AtomicReference<>(new JTable());
+    private AtomicReference<JComboBox<String>> jComboBox =
             new AtomicReference<>(new JComboBox<>());
-    private String selectedTable;
+    private  String selectedTable;
 
     public void createFrame() {
         //  JFrame frame = new JFrame("Database Manager");
@@ -51,19 +50,19 @@ public class ShowGUI extends JFrame
         JButton button ;
 
         button = makeActionButton(ADD,
-                "ADD");
+                "Add");
         toolBar.add(button);
 
         button = makeActionButton(REMOVE,
-                "remove");
+                "Remove");
         toolBar.add(button);
 
         button = makeActionButton(ALTER,
-                "alter");
+                "Alter");
         toolBar.add(button);
 
         button = makeActionButton(UPDATE,
-                "update");
+                "Update");
         toolBar.add(button);
 
         toolBar.add((createJComboBox()));
@@ -75,6 +74,7 @@ public class ShowGUI extends JFrame
 
         JButton button = new JButton();
         button.setIcon(new ImageIcon(IMAGE_PATH + altText + ".gif"));
+        button.setText(altText);
         button.setActionCommand(actionCommand);
         button.setToolTipText(altText);
         button.addActionListener(this);
@@ -85,8 +85,11 @@ public class ShowGUI extends JFrame
     public void actionPerformed(ActionEvent e) {
         String cmd = e.getActionCommand();
 
+
         if (ADD.equals(cmd)) {
-            new AddRowWindow().createWindows(selectedTable);
+
+            new AddRowWithDataWindow().createWindows(selectedTable);
+
 
         } else if (REMOVE.equals(cmd)) {
             removeRowFromTable();
@@ -104,7 +107,7 @@ public class ShowGUI extends JFrame
     }
 
 
-    public DefaultTableModel buildTableModel(ResultSet rs) {
+    public  DefaultTableModel buildTableModel(ResultSet rs) {
 
         ResultSetMetaData metaData;
         Vector<Vector<Object>> data = new Vector<>();
@@ -140,21 +143,15 @@ public class ShowGUI extends JFrame
         return jComboBox.get();
     }
 
-    private void drawTableByComboBoxSelection() {
-        selectedTable = (String) jComboBox.get().getSelectedItem();
-        contentPane.remove(activeTable.get());
-        activeTable.set(new JTable(buildTableModel(repository.findAllInTable(selectedTable))));
-        contentPane.add(activeTable.get());
-        contentPane.repaint();
-        contentPane.validate();
-    }
+     void drawTableByComboBoxSelection() {
+         selectedTable = (String) jComboBox.get().getSelectedItem();
 
-    private void refreshActiveTable() {
-        contentPane.remove(activeTable.get());
-        contentPane.add(activeTable.get());
-        contentPane.repaint();
-        contentPane.validate();
-    }
+         contentPane.remove(activeTable.get());
+         activeTable.set(new JTable(buildTableModel(repository.findAllInTable(selectedTable))));
+         contentPane.add(activeTable.get());
+         contentPane.repaint();
+         contentPane.validate();
+     }
 
     private void addRowToTable() {
         DefaultTableModel table = (DefaultTableModel) activeTable.get().getModel();

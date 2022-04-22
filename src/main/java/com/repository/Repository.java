@@ -12,6 +12,7 @@ import java.sql.Statement;
  */
 
 public class Repository {
+
     // galetu grazinti list jaigu resultSeta sumapintume
     public ResultSet findAllInTable(String tabName) {
         ResultSet projectResultSet = null;
@@ -56,7 +57,6 @@ public class Repository {
     }
 
     public void addTable(String tableName) {
-        int affectedRows = 0;
         if (findAllInTable(tableName) == null) {
             try {
                 Statement statement = DatabaseUtil.connectionToDatabase().createStatement();
@@ -134,4 +134,5 @@ public class Repository {
             e.printStackTrace();
         }
     }
+
 }
